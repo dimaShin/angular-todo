@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import TodoModel from "./todo.model";
 import {ApiService} from "../api/api.service";
 
@@ -15,6 +15,14 @@ export class TodoService {
     private api: ApiService
   ) { }
 
+  get(filter: Object = {}) : Promise<TodoModel[]> {
+    return this.api.get('/api/todo', filter)
+      .map(payload => {
+        this.todos = payload.map(todo => (new TodoModel(todo)));
+        return payload;
+      }).toPromise();
+  }
+
   add(data): Promise<TodoModel> {
     return this.api.post('api/todo', data)
       .map((response) => {
@@ -26,11 +34,10 @@ export class TodoService {
   }
 
   check(todo: TodoModel): Promise<TodoModel> {
-    return this.api.post(`api/todo/${todo.id}`, todo)
+    return this.api.patch(`/api/todo/${todo.id}/toggle`, todo)
       .map((response) => {
         const model = new TodoModel(response);
         Object.assign(todo, model);
-        this.todos.push(todo);
 
         return model;
       }).toPromise();
