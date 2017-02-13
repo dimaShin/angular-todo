@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import {RouterModule} from "@angular/router";
+import {SharedModule} from "./shared/shared.module";
+import {AuthService} from "./shared/services/auth/auth.service";
 
 @NgModule({
   declarations: [
@@ -16,17 +18,18 @@ import {RouterModule} from "@angular/router";
     HttpModule,
     RouterModule.forRoot([
       {
-        path: '',
-        pathMatch: 'full',
-        loadChildren: './dashboard/dashboard.module.ts#DashboardModule'
-      },
-      {
         path: 'auth',
         pathMatch: 'prefix',
         loadChildren: './auth/auth.module.ts#AuthModule'
 
+      },
+      {
+        path: '',
+        loadChildren: './dashboard/dashboard.module.ts#DashboardModule',
+        canActivate: [AuthService]
       }
-    ])
+    ]),
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
