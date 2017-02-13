@@ -26,7 +26,12 @@ import {AuthService} from "./shared/services/auth/auth.service";
       {
         path: '',
         loadChildren: './dashboard/dashboard.module.ts#DashboardModule',
-        canActivate: [AuthService]
+        canActivate: [AuthService],
+        pathMatch: 'prefix'
+      },
+      {
+        path: '**',
+        redirectTo: ''
       }
     ]),
     SharedModule

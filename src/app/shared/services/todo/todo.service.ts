@@ -23,8 +23,8 @@ export class TodoService {
       }).toPromise();
   }
 
-  add(data): Promise<TodoModel> {
-    return this.api.post('api/todo', data)
+  add(data: Object): Promise<TodoModel> {
+    return this.api.post('/api/todo', data)
       .map((response) => {
         const model = new TodoModel(response);
         this.todos.push(model);
