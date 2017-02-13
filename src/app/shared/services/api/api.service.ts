@@ -15,9 +15,19 @@ export class ApiService {
     private http: Http
   ) { }
 
-  get(url, query: any = {}): Observable<any> {
-    const search = new URLSearchParams();
-    search.appendAll(query);
+  private static getSearchParams(query: Object) : URLSearchParams {
+    const params = new URLSearchParams();
+    for (let i in query) {
+      if (query.hasOwnProperty(i)) {
+        params.set(i, query[i]);
+      }
+    }
+
+    return params;
+  }
+
+  get(url, query: Object = {}): Observable<any> {
+    const search = ApiService.getSearchParams(query);
     const request = new Request({
       url,
       method: RequestMethod.Get,
@@ -57,7 +67,7 @@ export class ApiService {
     return this._request(request);
   }
 
-  _request(request: Request) {
+  _request(request: Request) : Observable<any> {
 
     if (!request.headers) {
       request.headers = new Headers({'x-token': this.token});
@@ -75,5 +85,10 @@ export class ApiService {
       this._token = window.localStorage.getItem('x-token');
     }
     return this._token;
+  }
+
+  public set token(token: string) {
+    this._token = token;
+    window.localStorage.setItem('x-token', token);
   }
 }
