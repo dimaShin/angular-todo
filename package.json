@@ -4,8 +4,9 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
+    "start": "ng serve --port 8080 --host 0.0.0.0",
+    "build:prod": "ng build --env=prod --base-href https://dimashin.github.io/angular-todo/",
     "ng": "ng",
-    "start": "ng serve",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
