@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "./shared/shared.module";
 import {AuthService} from "./shared/services/auth/auth.service";
+import {APP_BASE_HREF} from "@angular/common";
+import {environment} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import {AuthService} from "./shared/services/auth/auth.service";
     ]),
     SharedModule
   ],
-  providers: [],
+  providers: [{provide: APP_BASE_HREF, useValue: environment.baseHref }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
