@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import {RouterModule} from "@angular/router";
 import {TodoListComponent} from "./todo-list/todo-list.component";
 import {TodoDetailsComponent} from "./todo-details/todo-details.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forChild([
       {
         path: '',
