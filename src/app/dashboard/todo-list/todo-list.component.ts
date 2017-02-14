@@ -47,7 +47,7 @@ export class TodoListComponent implements OnInit {
         return true;
       }
 
-      return todo.title.includes(search);
+      return todo.title.toLocaleLowerCase().includes(search.toLowerCase());
     })
   }
 
