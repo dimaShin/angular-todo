@@ -4,30 +4,59 @@ import {ApiService} from "../api/api.service";
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
-import * as Promise from "../../../../../../../../Library/Preferences/WebStorm2016.3/javascript/extLibs/http_github.com_DefinitelyTyped_DefinitelyTyped_raw_master_promise_index";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable()
 export class TodoService {
 
-  todos: TodoModel[] = [];
+  _todos: TodoModel[] = [];
+  loaded: boolean = false;
+  private state: BehaviorSubject<TodoModel[]> = new BehaviorSubject([]);
+  public stateUpdate: Observable<TodoModel[]> = this.state.asObservable();
 
   constructor(
     private api: ApiService
   ) { }
 
+  get todos() {
+    return [...this._todos];
+  }
+
+  set todos(todos: TodoModel[]) {
+    this.state.next([...todos]);
+    this._todos = todos;
+  }
+
   get(filter: Object = {}) : Promise<TodoModel[]> {
+
+    if (this.loaded) {
+      this.todos = TodoService.sortTodos(this.todos);
+      return Promise.resolve(this.todos);
+    }
+
     return this.api.get('/api/todo', filter)
       .map(payload => {
-        this.todos = payload.map(todo => (new TodoModel(todo)));
-        return payload;
+        this._todos = payload.map(todo => (new TodoModel(todo)));
+        this.loaded = true;
+        return this._todos;
       }).toPromise();
+  }
+
+  static sortTodos(todos: TodoModel[]): TodoModel[] {
+    return todos.sort((a: TodoModel, b: TodoModel) => {
+      if (a.done !== b.done) {
+        return a.done ? 1 : -1;
+      }
+
+      return a.createdAt < b.createdAt ? 1 : -1;
+    })
   }
 
   add(data: Object): Promise<TodoModel> {
     return this.api.post('/api/todo', data)
       .map((response) => {
         const model = new TodoModel(response);
-        this.todos.push(model);
+        this._todos.push(model);
 
         return model;
       }).toPromise();
@@ -39,6 +68,7 @@ export class TodoService {
         const model = new TodoModel(response);
         Object.assign(todo, model);
 
+        this.todos = TodoService.sortTodos(this.todos);
         return model;
       }).toPromise();
   }
